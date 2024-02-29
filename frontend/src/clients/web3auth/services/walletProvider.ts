@@ -4,9 +4,9 @@ import web3Provider  from "./web3Provider";
 export interface IWalletProvider {
     getAccounts: () => Promise<any>;
     getBalance: () => Promise<any>;
-    signAndSendTransaction: () => Promise<void>;
-    signTransaction: () => Promise<void>;
-    signMessage: () => Promise<void>;
+    signAndSendTransaction: () => Promise<any>;
+    signTransaction: () => Promise<any>;
+    signMessage: () => Promise<any>;
     getTokenBalance?: () => Promise<void>;
     signAndSendTokenTransaction?: () => Promise<void>;
     randomContractInteraction?: () => Promise<void>;

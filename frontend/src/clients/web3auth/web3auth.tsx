@@ -13,12 +13,17 @@ import { CHAIN_CONFIG, CHAIN_CONFIG_TYPE } from "./config/chainConfig";
 
 import { getWalletProvider, IWalletProvider } from "./services/walletProvider";
 
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+
 export interface IWeb3AuthContext {
     web3Auth: Web3Auth | null;
     provider: IWalletProvider | null;
     isLoading: boolean;
     user: unknown;
     chain: string;
+    balance: number | null;
+    account: string[];
     login: () => Promise<void>;
     logout: () => Promise<void>;
     getUserInfo: () => Promise<any>;
@@ -42,6 +47,8 @@ export const Web3AuthContext = createContext<IWeb3AuthContext>({
     isLoading: false,
     user: null,
     chain: "",
+    balance: 0,
+    account: [""],
     login: async () => {},
     logout: async () => {},
     getUserInfo: async () => {},
@@ -88,6 +95,8 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     const [walletServicesPlugin, setWalletServicesPlugin] = useState<WalletServicesPlugin | null>(null);
     const [user, setUser] = useState<unknown | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [balance, setBalance] = useState<number | null>(null);
+    const [account, setAccount] = useState<string[]>([]);
 
     const setWalletProvider = useCallback(
         (web3authProvider: IProvider) => {
@@ -300,6 +309,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
             return;
         }
         const user = await web3Auth?.getUserInfo();
+        console.log(user);
         uiConsole(user);
     };
 
@@ -330,16 +340,19 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         logo: "https://web3auth.io/images/web3authlog.png",
        };
        await web3Auth?.addChain(newChain);
+       console.log('New chain added');
        uiConsole('New chain added');
     };
 
     const switchChain = async () => {
         const chainId ='0xaa36a7';
         if (!provider) {
+            console.log('provider not initialized yet');
             uiConsole('provider not initialized yet');
             return;
         }
         await web3Auth?.switchChain({ chainId });
+        console.log('Chain Swithced');
         uiConsole('Chain Swithced');
     };
 
@@ -349,8 +362,19 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
             uiConsole('provider not initialized yet');
             return;
         }
-        await provider.getAccounts();
+        const account = await provider.getAccounts();
+        console.log(account);
+        setAccount(account); 
+        
     }
+
+        // const getAccounts = async () => {
+        //     if (!provider) {
+        //         console.log('provider not initialized yet');
+        //         return;
+        //     }
+        //     await provider.getAccounts();
+        // }
 
     const getBalance = async () => {
         if (!provider) {
@@ -358,7 +382,9 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
             uiConsole('provider not initialized yet');
             return;
         }
-        await provider.getBalance();
+        const balance = await provider.getBalance();
+        console.log(balance);
+        setBalance(balance);
     }
 
     // const getTokenBalance = async () => {
@@ -418,7 +444,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     const showWalletConnectScanner = async () => {
         if (!walletServicesPlugin) {
             console.log('walletServicesPlugin not initialized yet');
-            uiConsole('walletServicesPlugin not initialized');
+            // uiConsole('walletServicesPlugin not initialized');
             return;
         }
         await walletServicesPlugin.showWalletConnectScanner();
@@ -429,6 +455,10 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         if (el) {
             el.innerHTML = JSON.stringify(args || {}, (key, value) => (typeof value === 'bigint' ? value.toString() : value), 2);
         }
+        // if (el) {
+        //     const value = args?.[0]?.[0]; // Extract the first value from the first array
+        //     el.innerHTML = value ? value.toString() : ''; // Update the inner HTML with the extracted value
+        // }
     };
 
     const contextProvider = {
@@ -437,6 +467,8 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         provider,
         user,
         isLoading,
+        balance,
+        account,
         login,
         logout,
         getUserInfo,

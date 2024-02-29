@@ -1,13 +1,23 @@
 'use client'
 
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import { WALLET_ADAPTERS } from "@web3auth/base";
 import { useWeb3Auth } from "@/clients/web3auth/web3auth";
 
 const Landing = () => {
+    
+    const [accounts, setAccount] = useState(null); 
+    const params = useParams<{slug:string}>
+
     const {
       provider,
       login,
       logout,
+      balance,
+      account,
       getUserInfo,
       getAccounts,
       getBalance,
@@ -25,54 +35,97 @@ const Landing = () => {
       enableMFA,
     } = useWeb3Auth();
 
+
+  //   // const handleGetAccounts = async () => {
+  //   //   try {
+  //   //     const accounts = await getAccounts();
+  //   //     console.log(accounts);
+  //   // } catch (error) {
+  //   //     console.error('Error fetching accounts', error);
+  //   // }
+  //   // }
+
+  //   useEffect(() => {
+  //     if (web3Auth) {
+  //         const fetchAccounts = async () => {
+  //             try {
+  //                 const accounts = await getAccounts();
+  //                 setUserAccounts(accounts); // Update userAccounts state with fetched accounts
+  //             } catch (error) {
+  //                 console.error('Error fetching accounts', error);
+  //             }
+  //         };
+
+  //         fetchAccounts();
+  //     }
+  // }, [web3Auth]);
+
+    const handleLogin = async () => {
+      try {
+        const fetchedAccount = await getAccounts();
+        setAccount(fetchedAccount);
+      } catch (error) {
+        console.error('Error fetching accounts', error);
+      }
+    }
+
+    const redirectUrl = account ? `/profile/${account}` : '#';
+
     const loggedInView = (
       <>
       
       <div className="flex-container">
         
-        <button onClick={getUserInfo} className="card">
+        {/* <button onClick={getUserInfo} className="card">
             Get User Info
+        </button> */}
+
+        <button onClick={handleLogin} className='card'>
+          <Link className='hover:underline' href={redirectUrl}>
+            Login
+          </Link>
         </button>
         
         <button onClick={getAccounts} className='card'>
           Get Accounts
         </button>
         
-        <button onClick={getBalance} className='card'>
+        {/* <button onClick={getBalance} className='card'>
           Get Balance
-        </button>
+        </button> */}
 
         {/* <button onClick={getTokenBalance} className={styles.card}>
           Get Token Balance
         </button> */}
       
-        <button onClick={signMessage} className='card'>
+        {/* <button onClick={signMessage} className='card'>
           Sign Message
-        </button>
+        </button> */}
         
-        <button onClick={addChain} className='card'>
+        {/* <button onClick={addChain} className='card'>
           Add Chain
         </button>
-      
-        <button onClick={switchChain} className='card'>
+       */}
+
+        {/* <button onClick={switchChain} className='card'>
           Switch Chain
-        </button>
+        </button> */}
         
-        <button onClick={enableMFA} className='card'>
+        {/* <button onClick={enableMFA} className='card'>
           Enable MFA
-        </button>
+        </button> */}
         
-        {(web3Auth?.connectedAdapterName === WALLET_ADAPTERS.OPENLOGIN || chain === "calibration") && (
+        {/* {(web3Auth?.connectedAdapterName === WALLET_ADAPTERS.OPENLOGIN || chain === "calibration") && (
         
         <button onClick={signTransaction} className='card'>
           Sign Transaction
         </button>
         
-        )}
+        )} */}
       
-        <button onClick={signAndSendTransaction} className='card'>
+        {/* <button onClick={signAndSendTransaction} className='card'>
           Sign and Send Transaction
-        </button>
+        </button> */}
         
         {/* <button onClick={signAndSendTokenTransaction} className={styles.card}>
           Sign and Send Token Transaction
@@ -82,9 +135,9 @@ const Landing = () => {
           Contract Interaction
         </button> */}
         
-        <button onClick={showWalletConnectScanner} className='card'>
+        {/* <button onClick={showWalletConnectScanner} className='card'>
           Show WalletConnect Scanner
-        </button>
+        </button> */}
         
         <button onClick={logout} className='card'>
           Log Out
@@ -93,18 +146,35 @@ const Landing = () => {
         <div id="console" style={{ whiteSpace: "pre-line" }}>
           <p style={{ whiteSpace: "pre-line"}}></p>
         </div>
+
+        {/* <div>
+                <h2>User Accounts:</h2>
+                <ul>
+                {userAccounts && userAccounts.map((account, index) => (
+                        <li key={index}>{account}</li>
+                    ))}
+                </ul>
+        </div> */}
       
       </div>
       
       </>
     )
 
+    const SignUp = async () => {
+      await login();
+      await getAccounts();
+    };
+
     const unloggedInView = (
-        <button onClick={login} className='card'>
-            Login
+        <button onClick={SignUp} className='card'>
+            Sign Up
         </button>
+        
     );
 
+    console.log(balance)
+    console.log(account)
 
   return (
     <>
@@ -133,6 +203,9 @@ const Landing = () => {
 
         <div className="grid">{provider ? loggedInView : unloggedInView}</div>
         
+        
+        
+
         </div>
         </div>
         </div>
