@@ -1,22 +1,16 @@
 import { IProvider } from "@web3auth/base"; 
-import web3Provider  from "./web3Provider";
+import web3Provider from "./web3Provider";
 
 export interface IWalletProvider {
-    getAccounts: () => Promise<any>;
-    getBalance: () => Promise<any>;
-    signAndSendTransaction: () => Promise<any>;
-    signTransaction: () => Promise<any>;
-    signMessage: () => Promise<any>;
-    getTokenBalance?: () => Promise<void>;
-    signAndSendTokenTransaction?: () => Promise<void>;
-    randomContractInteraction?: () => Promise<void>;
+  getAccounts: () => Promise<string>;
+  goalContract?: (target: string, stake: number, updates: number, deadline: number) => Promise<void>;
 }
 
-export const getWalletProvider =  (chain: string, provider: IProvider, uiConsole: any): IWalletProvider => {
-    if (chain === 'calibration') {
-        return web3Provider(provider, uiConsole);
-    } else if (chain === 'mumbai') {
-        return web3Provider(provider, uiConsole);
-    }
+export const getWalletProvider = (chain: string, provider: IProvider, uiConsole: any): IWalletProvider => {
+  if (chain === 'calibration') {
     return web3Provider(provider, uiConsole);
-};
+  } else if (chain === 'mumbai') {
+    return web3Provider(provider, uiConsole);
+  }
+  return web3Provider(provider, uiConsole);
+}
