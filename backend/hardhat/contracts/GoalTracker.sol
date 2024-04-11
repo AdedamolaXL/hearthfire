@@ -94,5 +94,49 @@ contract GoalTracker {
 
         emit GoalClaimed(msg.sender, goal.stakeAmount, _goalId);
     }
+
+
+    function getGoalsByOwner(address _owner) external view returns (
+        uint256[] memory goalId,
+        string[] memory target,
+        uint256[] memory stakeAmount,
+        uint256[] memory updates,
+        uint256[] memory updatesRemaining,
+        uint256[] memory deadline,
+        bool[] memory completed,
+        bool[] memory claimed
+    ) {
+        uint256 count = 0;
+        for (uint256 i = 0; i < goalCount; i++) {
+            if (goals[i].owner == _owner) {
+                count++;
+            }
+        }
+        goalId = new uint256[](count);
+        target = new string[](count);
+        stakeAmount = new uint256[](count);
+        updates = new uint256[](count);
+        updatesRemaining = new uint256[](count);
+        deadline = new uint256[](count);
+        completed = new bool[](count);
+        claimed = new bool[](count);
+
+        uint256 index = 0;
+        for (uint256 i = 0; i < goalCount; i++) {
+            if (goals[i].owner == _owner) {
+                goalId[index] = i;
+                target[index] = goals[i].target;
+                stakeAmount[index] = goals[i].stakeAmount;
+                updates[index] = goals[i].updates;
+                updatesRemaining[index] = goals[i].updatesRemaining;
+                deadline[index] = goals[i].deadline;
+                completed[index] = goals[i].completed;
+                claimed[index] = goals[i].claimed;
+                index++;
+            }
+        }
+        
+        return (goalId, target, stakeAmount, updates, updatesRemaining, deadline, completed, claimed);
+    }
 }
 

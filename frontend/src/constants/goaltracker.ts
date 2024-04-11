@@ -1,6 +1,6 @@
-export const GoalAddress = '0xfb802eE16A7FAdEF91cf8e1AEcdf8063C11F3853'
+export const GoalAddress = '0x0532d0A87B6013a8A086C37D39BC1EB013abC2f4'
 
-export const GoalAbi = [
+export const GoalsAbi = [
   {
     "anonymous": false,
     "inputs": [
@@ -149,6 +149,60 @@ export const GoalAbi = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "getGoalsByOwner",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "goalId",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "target",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "stakeAmount",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "updates",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "updatesRemaining",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "deadline",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "completed",
+        "type": "bool[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "claimed",
+        "type": "bool[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "goalCount",
     "outputs": [
@@ -233,4 +287,4 @@ export const GoalAbi = [
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]
+] as const;

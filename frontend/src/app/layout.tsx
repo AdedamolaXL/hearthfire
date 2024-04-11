@@ -3,11 +3,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Web3AuthProvider } from "@/clients/web3auth/web3auth";
 import { WEB3AUTH_NETWORK_TYPE } from "@/clients/web3auth/config/web3AuthNetwork";
 import { CHAIN_CONFIG_TYPE } from "@/clients/web3auth/config/chainConfig";
-import { Web3Auth } from "@web3auth/modal";
+import Header from "@/components/header";
 
 
 
@@ -15,13 +15,6 @@ const STORAGE_KEY = {
   WEB3AUTH_NETWORK: 'web3auth_network',
   BLOCKCHAIN: 'blockchain',
 };
-
-// function App() {
-//   const savedNetwork = window.localStorage.getItem(STORAGE_KEY.WEB3AUTH_NETWORK) as WEB3AUTH_NETWORK_TYPE;
-//   const savedChain = window.localStorage.getItem(STORAGE_KEY.BLOCKCHAIN) as CHAIN_CONFIG_TYPE;
-//   const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>(savedNetwork || 'sapphire_mainnet');
-//   const [chain, setChain] = useState<CHAIN_CONFIG_TYPE>(savedChain || 'calibration');
-// }
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,10 +30,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
 
-  const savedNetwork = window.localStorage.getItem(STORAGE_KEY.WEB3AUTH_NETWORK) as WEB3AUTH_NETWORK_TYPE;
-  const savedChain = window.localStorage.getItem(STORAGE_KEY.BLOCKCHAIN) as CHAIN_CONFIG_TYPE;
-  const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>(savedNetwork || 'sapphire_mainnet');
-  const [chain, setChain] = useState<CHAIN_CONFIG_TYPE>(savedChain || 'calibration');
+  const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>('sapphire_mainnet');
+  const [chain, setChain] = useState<CHAIN_CONFIG_TYPE>('calibration');
+
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedNetwork = window.localStorage.getItem(STORAGE_KEY.WEB3AUTH_NETWORK) as WEB3AUTH_NETWORK_TYPE;
+      const savedChain = window.localStorage.getItem(STORAGE_KEY.BLOCKCHAIN) as CHAIN_CONFIG_TYPE;
+      
+      if (savedNetwork) setWeb3AuthNetwork(savedNetwork);
+      if (savedChain) setChain(savedChain);
+    }
+  }, []);
+ 
+  // const savedNetwork = window.localStorage.getItem(STORAGE_KEY.WEB3AUTH_NETWORK) as WEB3AUTH_NETWORK_TYPE;
+  // const savedChain = window.localStorage.getItem(STORAGE_KEY.BLOCKCHAIN) as CHAIN_CONFIG_TYPE;
+  // const [web3AuthNetwork, setWeb3AuthNetwork] = useState<WEB3AUTH_NETWORK_TYPE>(savedNetwork || 'sapphire_mainnet');
+  // const [chain, setChain] = useState<CHAIN_CONFIG_TYPE>(savedChain || 'calibration');
 
   // const networkChangeHandler = (network: WEB3AUTH_NETWORK_TYPE) => {
   //   window.localStorage.setItem(STORAGE_KEY.BLOCKCHAIN, network);
@@ -56,7 +63,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Web3AuthProvider chain={chain} web3AuthNetwork={web3AuthNetwork}>
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          
+          <Header />
+          {children}
+        
+        </body>
       </Web3AuthProvider>
       
     </html>

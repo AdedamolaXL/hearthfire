@@ -9,7 +9,7 @@ import { PLUGIN_EVENTS } from "@web3auth/base-plugin";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState, FunctionComponent } from "react";
 
 import { CHAIN_CONFIG, CHAIN_CONFIG_TYPE } from "./config/chainConfig";  
-import { getWalletProvider, IWalletProvider } from "./services/walletProvider";
+import { getWalletProvider, IWalletProvider, Goal } from "./services/walletProvider";
 
 export interface IWeb3AuthContext {
     web3Auth: Web3Auth | null;
@@ -18,11 +18,16 @@ export interface IWeb3AuthContext {
     user: unknown;
     chain: string;
     account: string;
+    goals: Goal[];
     login: () => Promise<void>;
     logout: () => Promise<void>;
     getAccounts: () => Promise<string>;
     goalContract: (target: string, stake: number, updates: number, deadline: number) => Promise<void>;
+    getGoals: (owner: string) => Promise<Goal[]>; 
+    updateGoals: (goalId: number, hash: string) => Promise<void>;
+    claimStake: (goalId: number) => Promise<void>;
 } 
+
 export const Web3AuthContext = createContext<IWeb3AuthContext>({
     web3Auth: null,
     provider: null,
@@ -30,12 +35,16 @@ export const Web3AuthContext = createContext<IWeb3AuthContext>({
     user: null,
     chain: "",
     account: "",
+    goals: [],
     login: async () => {},
     logout: async () => {},
     getAccounts: async () => {
       return '';
     },
     goalContract: async () => {},
+    getGoals: async (owner: string) => { return []; },
+    updateGoals: async () => {},
+    claimStake: async () => {},
 });
 
 export function useWeb3Auth(): IWeb3AuthContext {
@@ -68,6 +77,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
     const [user, setUser] = useState<unknown | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [account, setAccount] = useState<string>('');
+    const [goals, setGoals] = useState<Goal[]>([]);
 
 
     const setWalletProvider = useCallback(
@@ -120,6 +130,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
             });
         };
 
+        // customize the sign in pop up here to taste, i wonder if it will require switching to non-modal mode?
         async function init() {
             try {
                 const currentChainConfig = CHAIN_CONFIG[chain];
@@ -140,7 +151,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
                     chainConfig: currentChainConfig,
                     uiConfig: {
                         uxMode: 'redirect',
-                        appName: 'ASCENDING',
+                        appName: 'CLIMB',
                         appUrl: 'https://web3auth.io',
                         theme: {
                             primary: "#5f27cd",
@@ -158,6 +169,7 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
                 const openloginAdapter = new OpenloginAdapter({
                     loginSettings: {
                         mfaLevel: 'optional',
+                        loginProvider: 'google',
                     },
                     adapterSettings: {
                         buildEnv: 'testing',
@@ -301,6 +313,50 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         }
         await provider.goalContract?.(target, stake, updates, deadline);
     }
+
+    const getGoals = async (owner: string): Promise<Goal[]> => {
+        if (!provider) {
+            console.log('provider not initialized');
+            uiConsole('provider not initialized');
+            return []; // Return an empty array if provider is not initialized
+        }
+        try {
+            const goals = await provider.getGoals?.(owner);
+            // console.log(goals);
+    
+            if (goals) {
+                setGoals(goals);
+                return goals; // Return the fetched goals
+            } else {
+                console.error('failed to get goals');
+                return []; // Return an empty array if goals are not fetched
+            }
+        } catch (error) {
+            console.error('error while fetching goals:', error);
+            return []; // Return an empty array in case of any error
+        }
+    }
+
+    const updateGoals = async (goalId: number, hash: string) => {
+        if (!provider) {
+            console.log('provider not initialized');
+            uiConsole('provider not initialized');
+            return;
+        }
+        const update = await provider.updateGoals?.(goalId, hash);
+        console.log(update);
+    }
+
+    const claimStake = async (goalId: number) => {
+        if (!provider) {
+            console.log('provider not initialized');
+            uiConsole('provider not initialized');
+            return;
+        }
+        await provider.claimStake?.(goalId);
+    }
+    
+    
     
     const uiConsole = (...args: unknown[]): void => {
         const el = document.querySelector('#console>p');
@@ -320,10 +376,14 @@ export const Web3AuthProvider: FunctionComponent<IWeb3AuthState> = ({ children, 
         user,
         isLoading,
         account,
+        goals,
         login,
         logout,
         getAccounts,
         goalContract,
+        getGoals,
+        updateGoals,
+        claimStake
     };
     
     return <Web3AuthContext.Provider value={contextProvider}>{children}</Web3AuthContext.Provider>;

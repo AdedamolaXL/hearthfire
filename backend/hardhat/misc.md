@@ -1,1 +1,1 @@
-GoalTracker deployed to: 0xfb802eE16A7FAdEF91cf8e1AEcdf8063C11F3853
+GoalTracker deployed to: 0x0532d0A87B6013a8A086C37D39BC1EB013abC2f4
