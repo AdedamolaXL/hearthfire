@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { useWeb3Auth } from "@/clients/web3auth/web3auth";
@@ -18,7 +20,7 @@ const Landing = () => {
     setAccount(fetchedAccount)).catch(error => 
     console.error('Error fetching accounts', error));
     }
-  }, [provider]);
+  }, [provider, getAccounts]);
 
   console.log(account);
 
@@ -33,7 +35,7 @@ const Landing = () => {
           CLIMB
         </h3>
         <p className="absolute w-[878px] h-[27px] left-[610px] top-[302px]">
-          Do you have a dream project, you have been putting off because you didn't have the time, money or help ?
+          Do you have a dream project, you have been putting off because you didn&apos;t have the time, money or help ?
         </p>
         <p className='absolute w-[1078px] h-[27px] left-[880px] top-[352px]'>
           Well now, you can!. 
@@ -42,7 +44,7 @@ const Landing = () => {
           Climb to your goals from 0 - 100. Stack your earnings 0 -100. Find your first 100 people. Start with 1 project.
         </p>  
         <p className='absolute w-[1078px] h-[27px] left-[855px] top-[450px]'>
-          It's time to bet on yourself!
+          It&apos;s time to bet on yourself!
         </p> 
       </div>
 

@@ -34,7 +34,7 @@ const GoalForm = () => {
     <div>
 
       <label>
-        What's your goal?
+        What&apos;s your goal?
         <input
           type='text'
           value={target}
@@ -64,7 +64,7 @@ const GoalForm = () => {
       </label>
 
       <label>
-        What's your deadline ?
+        What&apos;s your deadline ?
         <input
             type='datetime-local'
             value={deadlineT} 

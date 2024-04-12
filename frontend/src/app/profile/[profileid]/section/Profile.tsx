@@ -9,7 +9,7 @@ const ProfileSection: React.FC = () => {
   return (
     <div className="bg-gray-100 w-full">
       {/* Profile Image */}
-      <img src="profile-img-url" alt="Profile" className="rounded-full h-20 w-20 mx-auto mb-4" />
+      <Image src="profile-img-url" alt="Profile" className="rounded-full h-20 w-20 mx-auto mb-4" />
 
       {/* Profile Info */}
       <div className="text-center">

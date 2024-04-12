@@ -2,8 +2,9 @@ import React, {useState, useEffect, useRef } from 'react';
 import { BiCloud, BiPlus} from 'react-icons/bi';
 import UploadInput from './VideoInput';
 import lighthouse from "@lighthouse-web3/sdk";
-import Background from '@/components/Background';
+import Background from '@/components/background';
 import { ChangeEvent } from 'react';
+import Image from 'next/image';
 
 export default function Upload() {
   const [title, setTitle] = useState<string>('');
@@ -165,7 +166,7 @@ export default function Upload() {
                 className="border-borderWhiteGray mt-2 flex  h-36 w-64 items-center justify-center rounded-md  border-2 border-dashed p-2 dark:border-gray-600"
               >
                 {thumbnail ? (
-                  <img
+                  <Image
                     onClick={() => {
                       if (thumbnailRef.current) {
                         thumbnailRef.current.click();
