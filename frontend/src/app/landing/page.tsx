@@ -38,17 +38,21 @@ const Landing = () => {
         </h3>
 
         <p className="text-blue-100 mt-3">
-          Do you have a dream project, you have been putting off because you didn&apos;t have the time, money or help ?
+          Do you have a project, you have been putting off because you didn&apos;t have, the time, the money or help ?
         </p>
         <p className='text-blue-100 mt-3'>
-          Well now, you can!. 
+          Well now.. ..you can build it! 
         </p>    
         <p className='text-blue-100 mt-3'>
-          Climb to your goals from 0 - 100. Stack your earnings 0 -100. Find your first 100 people. Start with 1 project.
-        </p> 
+          Climb towards your goal. Stack your earnings. Find your people. 
+        </p>
         <p className='text-blue-100 mt-3'>
-          It&apos;s time to bet on yourself!
-        </p> 
+          It's about time you bet on your self!
+        </p>
+        <p className='text-blue-100 mt-3'>
+          Sign up and start your dream project here..
+        </p>
+
       </div>
         
       <div className="mt-4">
